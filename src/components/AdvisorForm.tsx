@@ -1,11 +1,10 @@
 import { useState, useCallback } from 'react';
 import type { AdvisorFormState, FirmEntry, ContactFormData } from '../types';
 import { FirmService } from '../services/FirmService';
-import FirmInput from './FirmInput';
-import ContactForm from './ContactForm';
-import ThankYouMessage from './ThankYouMessage';
-import FirmSummaryList from './FirmSummaryList';
-import Button from './Button';
+import FirmInputStep from './FirmInputStep';
+import ContactDetailsStep from './ContactDetailsStep';
+import ThankYouStep from './ThankYouStep';
+import FormCompleteStep from './FormCompleteStep';
 import ErrorBoundary from './ErrorBoundary';
 
 const initialFormState: AdvisorFormState = {
@@ -148,134 +147,44 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     }
   }, [firmInputError]);
 
-  const renderCurrentStep = () => {
-    console.log('Rendering step:', formState.currentStep, 'Form state:', formState);
-
-    switch (formState.currentStep) {
-      case 'firm-input':
-        return (
-          <div className="space-y-6">
-            {/* Add new firm section */}
-            <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="typography-h4 text-night-sky-blue-dark-1 mb-2">
-                    {formState.enteredFirms.length === 0 ? 'Add Law Firm' : 'Add Another Law Firm'}
-                  </h3>
-                  <p className="text-neutral-1">
-                    {formState.enteredFirms.length === 0
-                      ? <span className="typography-body-text">Enter the first law firm where you have relevant relationships.</span>
-                      : <span className="text-[16px] leading-[20px] font-normal tracking-normal">
-                          {remainingFirms === 0
-                            ? "Enter another law firm."
-                            : `Enter another law firm (${remainingFirms} remaining).`
-                          }
-                        </span>
-                    }
-                  </p>
-                </div>
-
-                <FirmInput
-                  value={currentFirmInput}
-                  onChange={handleFirmInputChange}
-                  onSubmit={handleFirmSubmit}
-                  placeholder="Type law firm name..."
-                  error={firmInputError}
-                />
-
-                {formState.enteredFirms.length > 0 && (
-                  <div className="pt-4">
-                    <Button
-                      appearance="secondary"
-                      size="large"
-                      onClick={handleFinish}
-                      className="w-full"
-                    >
-                      {formState.enteredFirms.length === formState.maxFirms
-                        ? "Finish"
-                        : `Finish (${formState.enteredFirms.length} firm${formState.enteredFirms.length !== 1 ? 's' : ''} entered)`
-                      }
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Show previously entered firms if any */}
-            {formState.enteredFirms.length > 0 && (
-              <>
-                <hr className="border-neutral-4" />
-                <FirmSummaryList firms={formState.enteredFirms} />
-              </>
-            )}
-          </div>
-        );
-
-      case 'contact-details':
-        return (
-          <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
-            <ContactForm
-              firmName={formState.currentFirmName}
-              onSubmit={handleContactSubmit}
-              onCancel={handleContactCancel}
-              loading={loading}
-            />
-          </div>
-        );
-
-      case 'thank-you':
-        return (
-          <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
-            <ThankYouMessage
-              firmName={formState.currentFirmName}
-              onContinue={handleThankYouContinue}
-              onFinish={handleFinish}
-              canAddMore={canAddMoreFirms}
-            />
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  if (formState.isFormComplete) {
-    return (
-      <div className="text-center space-y-6">
-        <div className="w-16 h-16 bg-green-0 rounded-full flex items-center justify-center mx-auto">
-          <svg
-            className="w-8 h-8 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
-
-        <div>
-          <h3 className="typography-h4 text-night-sky-blue-dark-1 mb-2">
-            Form Complete
-          </h3>
-          <p className="typography-body-text text-neutral-1">
-            Thank you! You've submitted {formState.enteredFirms.length} firm{formState.enteredFirms.length !== 1 ? 's' : ''}.
-            We'll be in touch soon.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
       <ErrorBoundary>
-        {renderCurrentStep()}
+        {formState.isFormComplete && (
+          <FormCompleteStep enteredFirms={formState.enteredFirms} />
+        )}
+
+        {!formState.isFormComplete && formState.currentStep === 'firm-input' && (
+          <FirmInputStep
+            currentFirmInput={currentFirmInput}
+            onFirmInputChange={handleFirmInputChange}
+            onFirmSubmit={handleFirmSubmit}
+            firmInputError={firmInputError}
+            enteredFirms={formState.enteredFirms}
+            remainingFirms={remainingFirms}
+            maxFirms={formState.maxFirms}
+            onFinish={handleFinish}
+          />
+        )}
+
+        {!formState.isFormComplete && formState.currentStep === 'contact-details' && (
+          <ContactDetailsStep
+            firmName={formState.currentFirmName}
+            onSubmit={handleContactSubmit}
+            onCancel={handleContactCancel}
+            loading={loading}
+          />
+        )}
+
+        {!formState.isFormComplete && formState.currentStep === 'thank-you' && (
+          <ThankYouStep
+            firmName={formState.currentFirmName}
+            onContinue={handleThankYouContinue}
+            onFinish={handleFinish}
+            canAddMore={canAddMoreFirms}
+          />
+        )}
       </ErrorBoundary>
     </div>
   );
