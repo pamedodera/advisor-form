@@ -1,0 +1,185 @@
+import React, { useState } from 'react';
+import Input from './Input';
+import Select from './Select';
+import Button from './Button';
+import type { ContactFormData } from '../types';
+
+interface ContactFormProps {
+  firmName: string;
+  onSubmit: (data: ContactFormData) => void;
+  onCancel: () => void;
+  loading?: boolean;
+}
+
+export function ContactForm({
+  firmName,
+  onSubmit,
+  onCancel,
+  loading = false
+}: ContactFormProps) {
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    designation: '',
+    relationshipStrength: ''
+  });
+
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Record<keyof ContactFormData, string>> = {};
+
+    if (!formData.relationshipStrength || formData.relationshipStrength === '') {
+      newErrors.relationshipStrength = 'Please select relationship strength';
+    }
+
+    if (!formData.name || !formData.name.trim()) {
+      newErrors.name = 'Contact name is required';
+    }
+
+    if (!formData.designation || !formData.designation.trim()) {
+      newErrors.designation = 'Designation is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field: keyof ContactFormData) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: e.target.value
+    }));
+
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: undefined
+      }));
+    }
+  };
+
+  const handleSelectChange = (value: string | string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      relationshipStrength: value as ContactFormData['relationshipStrength']
+    }));
+
+    // Clear error when user selects
+    if (errors.relationshipStrength) {
+      setErrors(prev => ({
+        ...prev,
+        relationshipStrength: undefined
+      }));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Contact form submitted with data:', formData);
+
+    if (validateForm()) {
+      console.log('Validation passed, calling onSubmit');
+      onSubmit(formData);
+    } else {
+      console.log('Validation failed with errors:', errors);
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData({ name: '', designation: '', relationshipStrength: '' });
+    setErrors({});
+    onCancel();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="typography-h4 text-night-sky-blue-dark-1 mb-2">
+          Contact Details
+        </h3>
+        <p className="typography-body-text text-neutral-1">
+          Please provide contact details for <span className="font-semibold">{firmName}</span>
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Select
+            id="relationship-strength"
+            name="relationshipStrength"
+            label="How strong is your relationship?"
+            value={formData.relationshipStrength}
+            onChange={handleSelectChange}
+            options={[
+              { value: 'very-strong', label: 'Very strong' },
+              { value: 'strong', label: 'Strong' },
+              { value: 'moderate', label: 'Moderate' },
+              { value: 'weak', label: 'Weak' }
+            ]}
+            error={errors.relationshipStrength}
+            required
+            disabled={loading}
+            size="large"
+            placeholder="Select relationship strength..."
+          />
+        </div>
+
+        <div>
+          <Input
+            id="contact-name"
+            name="contactName"
+            label="Contact Name"
+            value={formData.name}
+            onChange={handleInputChange('name')}
+            placeholder="Enter contact name"
+            error={errors.name}
+            required
+            disabled={loading}
+            size="large"
+          />
+        </div>
+
+        <div>
+          <Input
+            id="contact-designation"
+            name="contactDesignation"
+            label="Designation"
+            value={formData.designation}
+            onChange={handleInputChange('designation')}
+            placeholder="Enter designation (e.g., Partner, Associate, etc.)"
+            error={errors.designation}
+            required
+            disabled={loading}
+            size="large"
+          />
+        </div>
+
+        <div className="flex gap-3 pt-4">
+          <Button
+            htmlType="submit"
+            appearance="primary"
+            size="large"
+            disabled={loading}
+            className="flex-1"
+          >
+            {loading ? 'Saving...' : 'Save Contact'}
+          </Button>
+          <Button
+            htmlType="button"
+            appearance="secondary"
+            size="large"
+            onClick={handleCancel}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export default ContactForm;

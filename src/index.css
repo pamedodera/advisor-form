@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap');
+@import "tailwindcss";
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+svg {
+  shape-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
+}
+
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+@theme {
+  /* Night Sky Blue */
+  --color-night-sky-blue-0: #60677b;
+  --color-night-sky-blue-1: #828898;
+  --color-night-sky-blue-2: #9da7b2;
+  --color-night-sky-blue-3: #cfd6dd;
+  --color-night-sky-blue-4: #dee3e7;
+  --color-night-sky-blue-5: #eaedf0;
+  --color-night-sky-blue-6: #f2f3f4;
+  --color-night-sky-blue-7: #f5f7f9;
+  --color-night-sky-blue-8: #fbfcfd;
+  --color-night-sky-blue-dark-1: #061131;
+  --color-night-sky-blue-dark-2: #272E35;
+  --color-night-sky-blue-dark-3: #3A424A;
+  --color-night-sky-blue-dark-4: #454D65;
+
+
+  /* Neutral */
+  --color-neutral-0: #5e5e5e;
+  --color-neutral-1: #898989;
+  --color-neutral-2: #a5a5a5;
+  --color-neutral-3: #d5d5d5;
+  --color-neutral-4: #e2e2e2;
+  --color-neutral-5: #eaeaea;
+  --color-neutral-6: #f2f2f2;
+  --color-neutral-7: #f7f7f7;
+  --color-neutral-8: #fcfcfc;
+  --color-neutral-dark-1: #222222;
+  --color-neutral-dark-2: #2D2D2D;
+  --color-neutral-dark-3: #404040;
+  --color-neutral-dark-4: #525252;
+
+  /* White Alpha */
+  --color-white-0: #ffffff;
+  /* --color-white-a-1: #ffffffd1;
+  --color-white-a-2: #ffffffb7;
+  --color-white-a-3: #ffffffad;
+  --color-white-a-4: #ffffffa3;
+  --color-white-a-5: #ffffff66;
+  --color-white-a-6: #ffffff3d;
+  --color-white-a-7: #ffffff1e;
+  --color-white-a-8: #ffffff19;
+  --color-white-a-9: #ffffff14;
+  --color-white-a-10: #ffffff0c;
+  --color-white-a-11: #ffffff07;
+  --color-white-a-12: #ffffff05; */
+
+  /* Red */
+  --color-red-0: #b12c27;
+  --color-red-1: #c5615d;
+  --color-red-2: #d89593;
+  --color-red-3: #d89593;
+  --color-red-4: #ebcac9;
+  --color-red-5: #ebcac9;
+  --color-red-6: #ffebeb;
+  --color-red-7: #fbf4f4;
+  --color-red-8: #fbf4f4;
+  --color-red-dark-1: #2C0B0A;
+  --color-red-dark-2: #591614;
+  --color-red-dark-3: #85211D;
+  --color-red-dark-4: #952D2D;
+
+  /* Dark Blue */
+  --color-dark-blue-0: #224099;
+  --color-dark-blue-1: #6792f4;
+  --color-dark-blue-2: #8db0fb;
+  --color-dark-blue-3: #cdddff;
+  --color-dark-blue-4: #d7e4ff;
+  --color-dark-blue-5: #e5eeff;
+  --color-dark-blue-6: #edf2ff;
+  --color-dark-blue-7: #f5f8ff;
+  --color-dark-blue-8: #fafbff;
+  --color-dark-blue-dark-1: #061131;
+  --color-dark-blue-dark-2: #113997;
+  --color-dark-blue-dark-3: #1E50C0;
+  --color-dark-blue-dark-4: #2759CD;
+
+
+  /* Blue */
+  --color-blue-0: #007da7;
+  --color-blue-1: #409dbd;
+  --color-blue-2: #80bed3;
+  --color-blue-3: #b8e8f5;
+  --color-blue-4: #c5ecf7;
+  --color-blue-5: #e0f3fa;
+  --color-blue-6: #e8f7fc;
+  --color-blue-7: #f2f8fb;
+  --color-blue-8: #fafeff;
+  --color-blue-dark-1: #001F2A;
+  --color-blue-dark-2: #003F54;
+  --color-blue-dark-3: #005E7D;
+  --color-blue-dark-4: #196C85;
+
+  /* Green */
+  --color-green-0: #2d8c63;
+  --color-green-1: #4aa578;
+  --color-green-2: #75cc9e;
+  --color-green-3: #c2ebd5;
+  --color-green-4: #c6f1da;
+  --color-green-5: #d8f8e7;
+  --color-green-6: #e6f9ef;
+  --color-green-7: #f4f9f7;
+  --color-green-8: #fbfefc;
+  --color-green-dark-1: #0B2319;
+  --color-green-dark-2: #174632;
+  --color-green-dark-3: #196742;
+  --color-green-dark-4: #22694A;
+
+  /* Yellow */
+  --color-yellow-0: #c68414;
+  --color-yellow-1: #d4a34f;
+  --color-yellow-2: #e2c189;
+  --color-yellow-3: #e2c189;
+  --color-yellow-4: #f1e0c4;
+  --color-yellow-5: #f1e0c4;
+  --color-yellow-6: #f1e0c4;
+  --color-yellow-7: #fcf9f3;
+  --color-yellow-8: #fcf9f3;
+  --color-yellow-dark-1: #322105;
+  --color-yellow-dark-2: #63420A;
+  --color-yellow-dark-3: #94630F;
+  --color-yellow-dark-4: #B4610E;
+
+  /* SPACINGS */
+
+  /* Spacing */
+  --spacing-0: 0px;
+  --spacing-0-5: 2px; /* componentPadding2xSmall, componentGap2xSmall */
+  --spacing-1: 4px; /* componentPaddingXSmall, componentGapXSmall */
+  --spacing-2: 8px; /* componentPaddingSmall, componentGapSmall */
+  --spacing-3: 12px; /* componentPaddingMedium, componentGapMedium */
+  --spacing-4: 16px; /* componentPaddingLarge, componentGapLarge */
+  --spacing-5: 20px; /* componentPaddingXLarge, componentGapXLarge */
+  --spacing-6: 24px; /* componentPadding2xLarge, componentGap2xLarge */
+  --spacing-8: 32px; /* componentPadding3xLarge, componentGap3xLarge */
+  --spacing-10: 40px; /* componentPadding4xLarge */
+  --spacing-11: 44px; /* componentPadding5xLarge, componentGap4xLarge */
+  --spacing-16: 64px; /* componentPadding6xLarge */
+  /* Border Radius */
+  --radius-none: 0px;
+  --radius-sm: 2px; /* small radius from design system */
+  --radius-default: 4px; /* default rounded class */
+  --radius-md: 8px; /* medium radius from design system */
+  --radius-lg: 12px; /* large radius from design system */
+  --radius-full: 9999px; /* circular/pill shape */
+}
+
+@layer components {
+  /* Accessible focus styles using Tailwind utilities */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-blue-0 focus-visible:ring-offset-2;
+  }
+
+  .focus-ring-inset {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-blue-0 focus-visible:ring-inset;
+  }
+  /* Headings */
+  .typography-h1 {
+    @apply text-[42px] leading-[50px] font-light tracking-normal;
+  }
+
+  .typography-h2 {
+    @apply text-[32px] leading-[40px] font-normal tracking-normal;
+  }
+
+  .typography-h3 {
+    @apply text-[28px] leading-[36px] font-normal tracking-normal;
+  }
+
+  .typography-h4 {
+    @apply text-[20px] leading-[28px] font-normal tracking-normal;
+  }
+
+  .typography-h5 {
+    @apply text-[16px] leading-[24px] font-semibold tracking-normal;
+  }
+
+  .typography-h6 {
+    @apply text-[14px] leading-[18px] font-semibold tracking-[0.16px];
+  }
+
+  /* Body Text */
+  .typography-body-text-lg {
+    @apply text-[22px] leading-[40px] font-normal tracking-normal;
+  }
+
+  .typography-body-text {
+    @apply text-[14px] leading-[18px] font-normal tracking-normal;
+  }
+
+  .typography-body-text-sm {
+    @apply text-[12px] leading-[16px] font-normal tracking-normal;
+  }
+
+  /* Labels */
+  .typography-label-lg {
+    @apply text-[16px] leading-[24px] font-medium tracking-[0.16px];
+  }
+
+  .typography-label {
+    @apply text-[14px] leading-[18px] font-medium tracking-[0.16px];
+  }
+
+  .typography-label-semantic {
+    @apply text-[10px] leading-[14px] font-medium tracking-[0.16px];
+  }
+
+  .typography-label-helper {
+    @apply text-[12px] leading-[16px] font-normal tracking-normal;
+  }
+
+  /* Buttons & Links */
+  .typography-button {
+    @apply text-[14px] leading-[18px] font-normal tracking-normal;
+  }
+
+  .typography-button-sm {
+    @apply text-[12px] leading-[16px] font-normal tracking-normal;
+  }
+
+  .typography-link {
+    @apply text-[14px] leading-[18px] font-semibold tracking-normal;
+  }
+
+  .typography-link-sm {
+    @apply text-[12px] leading-[16px] font-semibold tracking-normal;
+  }
+}
