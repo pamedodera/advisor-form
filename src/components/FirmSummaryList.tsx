@@ -5,15 +5,6 @@ interface FirmSummaryListProps {
 }
 
 function FirmSummaryCard({ firm }: { firm: FirmEntry }) {
-  const getRelationshipLabel = (strength?: string) => {
-    switch (strength) {
-      case 'very-strong': return 'Very strong';
-      case 'strong': return 'Strong';
-      case 'moderate': return 'Moderate';
-      case 'weak': return 'Weak';
-      default: return '';
-    }
-  };
 
   if (!firm.isMatched) {
     // Unmatched firm - show with same card style as matched firms

@@ -28,7 +28,7 @@ export function ContactForm({
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof ContactFormData, string>> = {};
 
-    if (!formData.relationshipStrength || formData.relationshipStrength === '') {
+    if (!formData.relationshipStrength) {
       newErrors.relationshipStrength = 'Please select relationship strength';
     }
 
