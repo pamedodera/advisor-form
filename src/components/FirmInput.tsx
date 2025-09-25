@@ -27,7 +27,7 @@ export function FirmInput({
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (value.length >= 2) {
+    if (value.length >= 3) {
       const firmSuggestions = FirmService.getFirmSuggestions(value, 8);
       setSuggestions(firmSuggestions);
       // Only show suggestions if we're not currently showing any (avoids showing after selection)
