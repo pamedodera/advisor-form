@@ -3,8 +3,9 @@ import type { FirmEntry } from '../types'
 import DefinitelyLogo from '../assets/definely-logo.svg?react'
 
 export default function HomePage() {
-  const handleFormComplete = (firms: FirmEntry[]) => {
+  const handleFormComplete = (firms: FirmEntry[], userEmail: string) => {
     console.log('Form completed with firms:', firms);
+    console.log('User email:', userEmail);
   };
 
   return (

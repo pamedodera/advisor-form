@@ -63,6 +63,7 @@ export interface AdvisorFormState {
   enteredFirms: FirmEntry[];
   isFormComplete: boolean;
   maxFirms: number;
+  userEmail: string;
 }
 
 export interface ContactFormData {

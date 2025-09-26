@@ -13,11 +13,12 @@ const initialFormState: AdvisorFormState = {
   currentFirmMatched: false,
   enteredFirms: [],
   isFormComplete: false,
-  maxFirms: 5
+  maxFirms: 5,
+  userEmail: ''
 };
 
 interface AdvisorFormProps {
-  onComplete?: (firms: FirmEntry[]) => void;
+  onComplete?: (firms: FirmEntry[], userEmail: string) => void;
 }
 
 export function AdvisorForm({ onComplete }: AdvisorFormProps) {
@@ -25,6 +26,7 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
   const [loading, setLoading] = useState(false);
   const [firmInputError, setFirmInputError] = useState<string>('');
   const [currentFirmInput, setCurrentFirmInput] = useState<string>('');
+  const [emailError, setEmailError] = useState<string>('');
 
   const canAddMoreFirms = formState.enteredFirms.length < formState.maxFirms;
   const remainingFirms = formState.maxFirms - formState.enteredFirms.length;
@@ -136,9 +138,9 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     }));
 
     if (onComplete) {
-      onComplete(finalFirms);
+      onComplete(finalFirms, formState.userEmail);
     }
-  }, [formState.currentStep, formState.currentFirmName, formState.enteredFirms, onComplete]);
+  }, [formState.currentStep, formState.currentFirmName, formState.enteredFirms, formState.userEmail, onComplete]);
 
   const handleFirmInputChange = useCallback((value: string) => {
     setCurrentFirmInput(value);
@@ -146,6 +148,28 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
       setFirmInputError('');
     }
   }, [firmInputError]);
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = useCallback((email: string) => {
+    setFormState(prev => ({
+      ...prev,
+      userEmail: email
+    }));
+
+    if (emailError) {
+      setEmailError('');
+    }
+  }, [emailError]);
+
+  const handleEmailBlur = useCallback(() => {
+    if (formState.userEmail && !validateEmail(formState.userEmail)) {
+      setEmailError('Please enter a valid email address');
+    }
+  }, [formState.userEmail]);
 
 
   return (
@@ -165,6 +189,10 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
             remainingFirms={remainingFirms}
             maxFirms={formState.maxFirms}
             onFinish={handleFinish}
+            userEmail={formState.userEmail}
+            onEmailChange={handleEmailChange}
+            onEmailBlur={handleEmailBlur}
+            emailError={emailError}
           />
         )}
 

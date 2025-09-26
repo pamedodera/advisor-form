@@ -1,6 +1,7 @@
 import FirmInput from './FirmInput';
 import FirmSummaryList from './FirmSummaryList';
 import Button from './Button';
+import Input from './Input';
 import type { FirmEntry } from '../types';
 
 interface FirmInputStepProps {
@@ -12,6 +13,10 @@ interface FirmInputStepProps {
   remainingFirms: number;
   maxFirms: number;
   onFinish: () => void;
+  userEmail: string;
+  onEmailChange: (email: string) => void;
+  onEmailBlur?: () => void;
+  emailError: string;
 }
 
 export function FirmInputStep({
@@ -22,37 +27,58 @@ export function FirmInputStep({
   enteredFirms,
   remainingFirms,
   maxFirms,
-  onFinish
+  onFinish,
+  userEmail,
+  onEmailChange,
+  onEmailBlur,
+  emailError
 }: FirmInputStepProps) {
   return (
     <div className="space-y-6">
       {/* Add new firm section */}
       <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
         <div className="space-y-4">
-          <div>
-            <h3 className="typography-h4 text-night-sky-blue-dark-1 mb-2">
-              {enteredFirms.length === 0 ? 'Add Law Firm' : 'Add Another Law Firm'}
-            </h3>
-            <p className="text-neutral-1">
-              {enteredFirms.length === 0
-                ? <span className="typography-body-text">Enter the first law firm where you have relevant relationships.</span>
-                : <span className="text-[16px] leading-[20px] font-normal tracking-normal">
-                    {remainingFirms === 0
-                      ? "Enter another law firm."
-                      : `Enter another law firm (${remainingFirms} remaining).`
-                    }
-                  </span>
-              }
-            </p>
-          </div>
+          {/* Show email input only when no firms entered */}
+          {enteredFirms.length === 0 && (
+            <div>
+              <Input
+                type="email"
+                label="Email Address"
+                placeholder="Enter your email address"
+                value={userEmail}
+                onChange={(e) => onEmailChange(e.target.value)}
+                onBlur={onEmailBlur}
+                error={emailError}
+                required
+                size="large"
+              />
+            </div>
+          )}
 
-          <FirmInput
-            value={currentFirmInput}
-            onChange={onFirmInputChange}
-            onSubmit={onFirmSubmit}
-            placeholder="Type law firm name..."
-            error={firmInputError}
-          />
+          <div>
+            <div className="space-y-1">
+              <label className="block mb-1 text-left typography-label-lg text-neutral-0">
+                {enteredFirms.length === 0 ? 'Law Firm' : 'Add Another Law Firm'}
+                <span className="text-red-0 ml-1">*</span>
+              </label>
+              <p className="typography-body-text text-left w-full text-night-sky-blue-1 pb-2">
+                {enteredFirms.length === 0
+                  ? "Enter the first law firm"
+                  : remainingFirms === 0
+                  ? "Enter another law firm"
+                  : `Enter another law firm (${remainingFirms} remaining)`
+                }
+              </p>
+            </div>
+
+            <FirmInput
+              value={currentFirmInput}
+              onChange={onFirmInputChange}
+              onSubmit={onFirmSubmit}
+              placeholder="Type law firm name..."
+              error={firmInputError}
+            />
+          </div>
 
           {enteredFirms.length > 0 && (
             <div className="pt-4">

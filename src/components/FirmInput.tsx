@@ -10,6 +10,8 @@ interface FirmInputProps {
   placeholder?: string;
   error?: string;
   disabled?: boolean;
+  label?: string;
+  helperText?: string;
 }
 
 export function FirmInput({
@@ -18,7 +20,9 @@ export function FirmInput({
   onSubmit,
   placeholder = "Enter law firm name...",
   error,
-  disabled = false
+  disabled = false,
+  label,
+  helperText
 }: FirmInputProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -123,8 +127,8 @@ export function FirmInput({
 
   return (
     <div className="relative">
-      <div className="flex gap-3">
-        <div className="flex-1 relative">
+      <div className="space-y-4">
+        <div className="relative">
           <Input
             ref={inputRef}
             value={value}
@@ -138,40 +142,42 @@ export function FirmInput({
             size="large"
             className="relative z-10"
             autoComplete="off"
+            label={label}
+            helperText={helperText}
           />
+
+          {showSuggestions && suggestions.length > 0 && (
+            <div
+              ref={suggestionsRef}
+              className="absolute z-20 left-0 right-0 mt-1 bg-white border border-night-sky-blue-3 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+            >
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  className={`w-full px-4 py-3 text-left hover:bg-night-sky-blue-7 focus:bg-night-sky-blue-7 focus:outline-none border-b border-night-sky-blue-5 last:border-b-0 ${
+                    index === selectedIndex ? 'bg-night-sky-blue-7' : ''
+                  }`}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
+
         <Button
           appearance="primary"
           size="large"
           onClick={handleSubmitClick}
           disabled={disabled || !value.trim()}
+          className="w-full"
         >
           Add Firm
         </Button>
       </div>
-
-      {showSuggestions && suggestions.length > 0 && (
-        <div
-          ref={suggestionsRef}
-          className="absolute z-20 left-0 right-20 mt-1 bg-white border border-night-sky-blue-3 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-        >
-          {suggestions.map((suggestion, index) => (
-            <button
-              key={suggestion}
-              type="button"
-              className={`w-full px-4 py-3 text-left hover:bg-night-sky-blue-7 focus:bg-night-sky-blue-7 focus:outline-none border-b border-night-sky-blue-5 last:border-b-0 ${
-                index === selectedIndex ? 'bg-night-sky-blue-7' : ''
-              }`}
-              onClick={() => handleSuggestionClick(suggestion)}
-              onMouseEnter={() => setSelectedIndex(index)}
-            >
-              <span className="text-sm font-medium text-neutral-0">
-                {suggestion}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
