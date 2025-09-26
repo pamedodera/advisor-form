@@ -19,7 +19,7 @@ export default function HomePage() {
           {/* Main Heading */}
           <div className="space-y-6">
             <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight">
-              Referral Partners and Contact Details
+              Network Assist Portal
             </h1>
           </div>
 
