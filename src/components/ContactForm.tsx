@@ -20,7 +20,8 @@ export function ContactForm({
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     designation: '',
-    relationshipStrength: ''
+    relationshipStrength: '',
+    contactFrequency: ''
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
@@ -30,6 +31,10 @@ export function ContactForm({
 
     if (!formData.relationshipStrength) {
       newErrors.relationshipStrength = 'Please select relationship strength';
+    }
+
+    if (!formData.contactFrequency) {
+      newErrors.contactFrequency = 'Please select contact frequency';
     }
 
     if (!formData.name || !formData.name.trim()) {
@@ -61,7 +66,7 @@ export function ContactForm({
     }
   };
 
-  const handleSelectChange = (value: string | string[]) => {
+  const handleRelationshipChange = (value: string | string[]) => {
     setFormData(prev => ({
       ...prev,
       relationshipStrength: value as ContactFormData['relationshipStrength']
@@ -72,6 +77,21 @@ export function ContactForm({
       setErrors(prev => ({
         ...prev,
         relationshipStrength: undefined
+      }));
+    }
+  };
+
+  const handleFrequencyChange = (value: string | string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      contactFrequency: value as ContactFormData['contactFrequency']
+    }));
+
+    // Clear error when user selects
+    if (errors.contactFrequency) {
+      setErrors(prev => ({
+        ...prev,
+        contactFrequency: undefined
       }));
     }
   };
@@ -89,7 +109,7 @@ export function ContactForm({
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', designation: '', relationshipStrength: '' });
+    setFormData({ name: '', designation: '', relationshipStrength: '', contactFrequency: '' });
     setErrors({});
     onCancel();
   };
@@ -112,7 +132,7 @@ export function ContactForm({
             name="relationshipStrength"
             label="How strong is your relationship?"
             value={formData.relationshipStrength}
-            onChange={handleSelectChange}
+            onChange={handleRelationshipChange}
             options={[
               { value: 'very-strong', label: 'Very strong' },
               { value: 'strong', label: 'Strong' },
@@ -124,6 +144,27 @@ export function ContactForm({
             disabled={loading}
             size="large"
             placeholder="Select relationship strength..."
+          />
+        </div>
+
+        <div>
+          <Select
+            id="contact-frequency"
+            name="contactFrequency"
+            label="How often are you in touch with your contact?"
+            value={formData.contactFrequency}
+            onChange={handleFrequencyChange}
+            options={[
+              { value: 'quarterly', label: 'Quarterly' },
+              { value: 'annually', label: 'Annually' },
+              { value: 'occasionally', label: 'Occasionally' },
+              { value: 'recently', label: 'Recently' }
+            ]}
+            error={errors.contactFrequency}
+            required
+            disabled={loading}
+            size="large"
+            placeholder="Select contact frequency..."
           />
         </div>
 

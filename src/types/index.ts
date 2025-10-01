@@ -53,6 +53,7 @@ export interface FirmEntry {
   contactName?: string;
   contactDesignation?: string;
   relationshipStrength?: 'very-strong' | 'strong' | 'moderate' | 'weak' | '';
+  contactFrequency?: 'quarterly' | 'annually' | 'occasionally' | 'recently' | '';
   timestamp: Date;
 }
 
@@ -70,4 +71,5 @@ export interface ContactFormData {
   name: string;
   designation: string;
   relationshipStrength: 'very-strong' | 'strong' | 'moderate' | 'weak' | '';
+  contactFrequency: 'quarterly' | 'annually' | 'occasionally' | 'recently' | '';
 }

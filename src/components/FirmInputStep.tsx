@@ -83,7 +83,7 @@ export function FirmInputStep({
           {enteredFirms.length > 0 && (
             <div className="pt-4">
               <Button
-                appearance="secondary"
+                appearance="primary"
                 size="large"
                 onClick={onFinish}
                 className="w-full"

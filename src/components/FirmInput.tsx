@@ -169,7 +169,7 @@ export function FirmInput({
         </div>
 
         <Button
-          appearance="primary"
+          appearance="secondary"
           size="large"
           onClick={handleSubmitClick}
           disabled={disabled || !value.trim()}

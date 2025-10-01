@@ -22,10 +22,13 @@ export default function HomePage() {
             <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight">
               Network Assist Portal
             </h1>
+            <p className="text-neutral-1 max-w-xl mx-auto text-lg">
+              Please indicate the firms where you have strong relationships and would be willing to make an introduction. For each firm that matches our prospect list, we'll ask you to share contact details.
+            </p>
           </div>
 
           {/* Form */}
-          <div className="max-w-md mx-auto">
+          <div className="max-w-xl mx-auto">
             <AdvisorForm onComplete={handleFormComplete} />
           </div>
         </div>
