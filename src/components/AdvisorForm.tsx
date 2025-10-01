@@ -72,6 +72,7 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
         contactName: contactData.name,
         contactDesignation: contactData.designation,
         relationshipStrength: contactData.relationshipStrength,
+        contactFrequency: contactData.contactFrequency,
         timestamp: new Date()
       };
 
