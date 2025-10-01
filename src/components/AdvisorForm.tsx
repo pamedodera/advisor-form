@@ -110,6 +110,10 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
         currentFirmMatched: false
       }));
 
+      // Show toast notification for matched firm
+      setToastMessage(`Thank you! We'll be in touch with you about ${formState.currentFirmName}.`);
+      setShowToast(true);
+
       console.log('Returning to firm-input step');
       setLoading(false);
     }, 1000);
