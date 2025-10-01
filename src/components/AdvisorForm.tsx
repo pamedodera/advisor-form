@@ -118,7 +118,7 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     }));
   }, [formState.currentFirmName]);
 
-  const handleFinish = useCallback(() => {
+  const handleFinish = useCallback(async () => {
     // If we're in thank-you step, add the current firm first
     let finalFirms = formState.enteredFirms;
 
@@ -132,14 +132,47 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
       finalFirms = [...finalFirms, newFirmEntry];
     }
 
-    setFormState(prev => ({
-      ...prev,
-      isFormComplete: true,
-      enteredFirms: finalFirms
-    }));
+    // Submit to Netlify function
+    try {
+      const response = await fetch('/.netlify/functions/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firms: finalFirms,
+          userEmail: formState.userEmail
+        })
+      });
 
-    if (onComplete) {
-      onComplete(finalFirms, formState.userEmail);
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
+      const result = await response.json();
+      console.log('Form submitted successfully:', result);
+
+      setFormState(prev => ({
+        ...prev,
+        isFormComplete: true,
+        enteredFirms: finalFirms
+      }));
+
+      if (onComplete) {
+        onComplete(finalFirms, formState.userEmail);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      // Still show completion screen even if Slack notification fails
+      setFormState(prev => ({
+        ...prev,
+        isFormComplete: true,
+        enteredFirms: finalFirms
+      }));
+
+      if (onComplete) {
+        onComplete(finalFirms, formState.userEmail);
+      }
     }
   }, [formState.currentStep, formState.currentFirmName, formState.enteredFirms, formState.userEmail, onComplete]);
 
