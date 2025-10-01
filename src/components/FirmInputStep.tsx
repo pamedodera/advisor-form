@@ -17,6 +17,7 @@ interface FirmInputStepProps {
   onEmailChange: (email: string) => void;
   onEmailBlur?: () => void;
   emailError: string;
+  onRemoveFirm?: (firmId: string) => void;
 }
 
 export function FirmInputStep({
@@ -31,7 +32,8 @@ export function FirmInputStep({
   userEmail,
   onEmailChange,
   onEmailBlur,
-  emailError
+  emailError,
+  onRemoveFirm
 }: FirmInputStepProps) {
   return (
     <div className="space-y-6">
@@ -102,7 +104,7 @@ export function FirmInputStep({
       {enteredFirms.length > 0 && (
         <>
           <hr className="border-neutral-4" />
-          <FirmSummaryList firms={enteredFirms} />
+          <FirmSummaryList firms={enteredFirms} onRemoveFirm={onRemoveFirm} />
         </>
       )}
     </div>

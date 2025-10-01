@@ -1,11 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { AdvisorFormState, FirmEntry, ContactFormData } from '../types';
 import { FirmService } from '../services/FirmService';
 import FirmInputStep from './FirmInputStep';
 import ContactDetailsStep from './ContactDetailsStep';
-import ThankYouStep from './ThankYouStep';
 import FormCompleteStep from './FormCompleteStep';
 import ErrorBoundary from './ErrorBoundary';
+import Toast from './Toast';
 
 const initialFormState: AdvisorFormState = {
   currentStep: 'firm-input',
@@ -27,8 +27,9 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
   const [firmInputError, setFirmInputError] = useState<string>('');
   const [currentFirmInput, setCurrentFirmInput] = useState<string>('');
   const [emailError, setEmailError] = useState<string>('');
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [showToast, setShowToast] = useState(false);
 
-  const canAddMoreFirms = formState.enteredFirms.length < formState.maxFirms;
   const remainingFirms = formState.maxFirms - formState.enteredFirms.length;
 
   const handleFirmSubmit = useCallback((firmName: string) => {
@@ -51,12 +52,35 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     // Clear the input field
     setCurrentFirmInput('');
 
-    setFormState(prev => ({
-      ...prev,
-      currentFirmName: exactFirmName,
-      currentFirmMatched: isMatched,
-      currentStep: isMatched ? 'contact-details' : 'thank-you'
-    }));
+    if (isMatched) {
+      // Matched firm: go to contact details step
+      setFormState(prev => ({
+        ...prev,
+        currentFirmName: exactFirmName,
+        currentFirmMatched: isMatched,
+        currentStep: 'contact-details'
+      }));
+    } else {
+      // Unmatched firm: add to list immediately and show toast
+      const newFirmEntry: FirmEntry = {
+        id: crypto.randomUUID(),
+        firmName: exactFirmName,
+        isMatched: false,
+        timestamp: new Date()
+      };
+
+      setFormState(prev => ({
+        ...prev,
+        enteredFirms: [...prev.enteredFirms, newFirmEntry],
+        currentFirmName: '',
+        currentFirmMatched: false,
+        currentStep: 'firm-input'
+      }));
+
+      // Show toast notification
+      setToastMessage(`Thank you! We'll be in touch with you about ${exactFirmName}.`);
+      setShowToast(true);
+    }
   }, [formState.enteredFirms]);
 
   const handleContactSubmit = useCallback((contactData: ContactFormData) => {
@@ -86,6 +110,10 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
         currentFirmMatched: false
       }));
 
+      // Show toast notification for matched firm
+      setToastMessage(`Thank you! We'll be in touch with you about ${formState.currentFirmName}.`);
+      setShowToast(true);
+
       console.log('Returning to firm-input step');
       setLoading(false);
     }, 1000);
@@ -100,37 +128,20 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     }));
   }, []);
 
-  const handleThankYouContinue = useCallback(() => {
-    // Add the unmatched firm to the list
-    const newFirmEntry: FirmEntry = {
-      id: crypto.randomUUID(),
-      firmName: formState.currentFirmName,
-      isMatched: false,
-      timestamp: new Date()
-    };
+  // Auto-dismiss toast after 5 seconds
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 5000);
 
-    setFormState(prev => ({
-      ...prev,
-      enteredFirms: [...prev.enteredFirms, newFirmEntry],
-      currentStep: 'firm-input',
-      currentFirmName: '',
-      currentFirmMatched: false
-    }));
-  }, [formState.currentFirmName]);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
   const handleFinish = useCallback(async () => {
-    // If we're in thank-you step, add the current firm first
+    // No need to check for thank-you step since unmatched firms are added immediately
     let finalFirms = formState.enteredFirms;
-
-    if (formState.currentStep === 'thank-you' && formState.currentFirmName) {
-      const newFirmEntry: FirmEntry = {
-        id: crypto.randomUUID(),
-        firmName: formState.currentFirmName,
-        isMatched: false,
-        timestamp: new Date()
-      };
-      finalFirms = [...finalFirms, newFirmEntry];
-    }
 
     // Submit to Netlify function
     try {
@@ -205,12 +216,28 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     }
   }, [formState.userEmail]);
 
+  const handleNewSubmission = useCallback(() => {
+    setFormState(initialFormState);
+    setCurrentFirmInput('');
+    setFirmInputError('');
+    setEmailError('');
+  }, []);
+
+  const handleRemoveFirm = useCallback((firmId: string) => {
+    setFormState(prev => ({
+      ...prev,
+      enteredFirms: prev.enteredFirms.filter(firm => firm.id !== firmId)
+    }));
+  }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <ErrorBoundary>
         {formState.isFormComplete && (
-          <FormCompleteStep enteredFirms={formState.enteredFirms} />
+          <FormCompleteStep
+            enteredFirms={formState.enteredFirms}
+            onNewSubmission={handleNewSubmission}
+          />
         )}
 
         {!formState.isFormComplete && formState.currentStep === 'firm-input' && (
@@ -227,6 +254,7 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
             onEmailChange={handleEmailChange}
             onEmailBlur={handleEmailBlur}
             emailError={emailError}
+            onRemoveFirm={handleRemoveFirm}
           />
         )}
 
@@ -238,16 +266,18 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
             loading={loading}
           />
         )}
-
-        {!formState.isFormComplete && formState.currentStep === 'thank-you' && (
-          <ThankYouStep
-            firmName={formState.currentFirmName}
-            onContinue={handleThankYouContinue}
-            onFinish={handleFinish}
-            canAddMore={canAddMoreFirms}
-          />
-        )}
       </ErrorBoundary>
+
+      {/* Toast notification */}
+      {showToast && (
+        <div className="flex justify-center pt-4">
+          <Toast
+            label={toastMessage}
+            intent="success"
+            onClose={() => setShowToast(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

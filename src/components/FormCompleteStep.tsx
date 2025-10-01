@@ -1,10 +1,12 @@
 import type { FirmEntry } from '../types';
+import { Button } from './Button';
 
 interface FormCompleteStepProps {
   enteredFirms: FirmEntry[];
+  onNewSubmission?: () => void;
 }
 
-export function FormCompleteStep({ enteredFirms }: FormCompleteStepProps) {
+export function FormCompleteStep({ enteredFirms, onNewSubmission }: FormCompleteStepProps) {
   return (
     <div className="text-center space-y-6">
       <div className="w-16 h-16 bg-green-0 rounded-full flex items-center justify-center mx-auto">
@@ -32,6 +34,17 @@ export function FormCompleteStep({ enteredFirms }: FormCompleteStepProps) {
           We'll be in touch soon.
         </p>
       </div>
+
+      {onNewSubmission && (
+        <div className="flex justify-center">
+          <Button
+            label="Submit Another Form"
+            appearance="primary"
+            size="medium"
+            onClick={onNewSubmission}
+          />
+        </div>
+      )}
     </div>
   );
 }
