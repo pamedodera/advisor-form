@@ -125,7 +125,7 @@ export function ContactForm({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <Select
             id="relationship-strength"
