@@ -140,6 +140,17 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
   }, [showToast]);
 
   const handleFinish = useCallback(async () => {
+    // Validate email is provided and valid
+    if (!formState.userEmail) {
+      setEmailError('Please enter your email address');
+      return;
+    }
+
+    if (!validateEmail(formState.userEmail)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
     // No need to check for thank-you step since unmatched firms are added immediately
     let finalFirms = formState.enteredFirms;
 
