@@ -35,6 +35,17 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
   const handleFirmSubmit = useCallback((firmName: string) => {
     setFirmInputError('');
 
+    // Validate email is provided and valid before allowing any firm submission
+    if (!formState.userEmail) {
+      setEmailError('Please enter your email address before adding a firm');
+      return;
+    }
+
+    if (!validateEmail(formState.userEmail)) {
+      setEmailError('Please enter a valid email address before adding a firm');
+      return;
+    }
+
     // Check if firm already entered
     const isAlreadyEntered = formState.enteredFirms.some(
       entry => entry.firmName.toLowerCase() === firmName.toLowerCase()
@@ -81,7 +92,7 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
       setToastMessage(`Thank you! We'll be in touch with you about ${exactFirmName}.`);
       setShowToast(true);
     }
-  }, [formState.enteredFirms]);
+  }, [formState.enteredFirms, formState.userEmail]);
 
   const handleContactSubmit = useCallback((contactData: ContactFormData) => {
     console.log('handleContactSubmit called with:', contactData);
