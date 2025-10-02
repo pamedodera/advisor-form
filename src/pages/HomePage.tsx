@@ -19,10 +19,10 @@ export default function HomePage() {
 
           {/* Main Heading */}
           <div className="space-y-6">
-            <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight">
+            <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
               Network Assist Portal
             </h1>
-            <p className="text-neutral-1 max-w-xl mx-auto text-lg">
+            <p className="text-neutral-1 max-w-xl mx-auto text-lg" style={{ fontFamily: 'Poppins, sans-serif' }}>
               Please indicate the firms where you have strong relationships and would be willing to make an introduction. For each firm that matches our prospect list, we'll ask you to share contact details.
             </p>
           </div>

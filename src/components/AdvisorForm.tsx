@@ -139,12 +139,12 @@ export function AdvisorForm({ onComplete }: AdvisorFormProps) {
     }));
   }, []);
 
-  // Auto-dismiss toast after 5 seconds
+  // Auto-dismiss toast after 3 seconds
   useEffect(() => {
     if (showToast) {
       const timer = setTimeout(() => {
         setShowToast(false);
-      }, 5000);
+      }, 3000);
 
       return () => clearTimeout(timer);
     }

@@ -117,10 +117,10 @@ export function ContactForm({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="typography-h4 text-night-sky-blue-dark-1 mb-2">
+        <h3 className="typography-h4 text-night-sky-blue-dark-1 mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
           Contact Details
         </h3>
-        <p className="typography-body-text text-neutral-1">
+        <p className="typography-body-text text-neutral-1" style={{ fontFamily: 'Poppins, sans-serif' }}>
           Please provide contact details for <span className="font-semibold">{firmName}</span>
         </p>
       </div>
