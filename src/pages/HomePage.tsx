@@ -9,6 +9,7 @@ export default function HomePage() {
   const [toastMessage, setToastMessage] = useState<string>('');
   const [showToast, setShowToast] = useState(false);
   const [enteredFirms, setEnteredFirms] = useState<FirmEntry[]>([]);
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
   const handleFormComplete = (firms: FirmEntry[], userEmail: string) => {
     console.log('Form completed with firms:', firms);
@@ -28,6 +29,13 @@ export default function HomePage() {
     setEnteredFirms(prev => prev.filter(firm => firm.id !== firmId));
   };
 
+  const handleFormStateChange = (isComplete: boolean) => {
+    setIsFormComplete(isComplete);
+    if (isComplete) {
+      setEnteredFirms([]);
+    }
+  };
+
   // Auto-dismiss toast after 3 seconds
   useEffect(() => {
     if (showToast) {
@@ -41,7 +49,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-8">
-      <div className={`w-full px-4 transition-all duration-300 ${enteredFirms.length > 0 ? 'max-w-7xl' : 'max-w-2xl'}`}>
+      <div className={`w-full px-4 transition-all duration-300 ${enteredFirms.length > 0 && !isFormComplete ? 'max-w-7xl' : 'max-w-2xl'}`}>
         <div className="space-y-6 text-center">
           {/* Definely Logo */}
           <div className="flex items-center justify-center">
@@ -50,9 +58,9 @@ export default function HomePage() {
 
           {/* White Card Container with two columns */}
           <div className="bg-white rounded-2xl p-10" style={{ border: '1px solid #eeeeee', boxShadow: 'rgba(0, 0, 0, 0.06) 0px 0.15rem 0.25rem 0px' }}>
-            <div className={enteredFirms.length > 0 ? "grid lg:grid-cols-2 gap-8" : ""}>
+            <div className={enteredFirms.length > 0 && !isFormComplete ? "grid lg:grid-cols-2 gap-8" : ""}>
               {/* Left side - Heading, description and form */}
-              <div className={enteredFirms.length > 0 ? "flex flex-col justify-center" : ""}>
+              <div className={enteredFirms.length > 0 && !isFormComplete ? "flex flex-col justify-center" : ""}>
                 {/* Main Heading */}
                 <div className="space-y-3 mb-8">
                   <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
@@ -71,12 +79,13 @@ export default function HomePage() {
                     onToast={handleToast}
                     onFirmsChange={handleFirmsChange}
                     onRemoveFirm={handleRemoveFirm}
+                    onFormStateChange={handleFormStateChange}
                   />
                 </div>
               </div>
 
               {/* Right side - Firm cards with divider */}
-              {enteredFirms.length > 0 && (
+              {enteredFirms.length > 0 && !isFormComplete && (
                 <div className="border-t lg:border-t-0 lg:border-l border-neutral-4 pt-8 lg:pt-0 lg:pl-8 flex items-center w-full">
                   <div className="w-full">
                     <FirmSummaryList firms={enteredFirms} onRemoveFirm={handleRemoveFirm} />

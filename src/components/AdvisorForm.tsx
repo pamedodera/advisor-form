@@ -21,9 +21,10 @@ interface AdvisorFormProps {
   onToast?: (message: string) => void;
   onFirmsChange?: (firms: FirmEntry[]) => void;
   onRemoveFirm?: (firmId: string) => void;
+  onFormStateChange?: (isComplete: boolean) => void;
 }
 
-export function AdvisorForm({ onComplete, onToast, onFirmsChange, onRemoveFirm }: AdvisorFormProps) {
+export function AdvisorForm({ onComplete, onToast, onFirmsChange, onRemoveFirm, onFormStateChange }: AdvisorFormProps) {
   const [formState, setFormState] = useState<AdvisorFormState>(initialFormState);
   const [loading, setLoading] = useState(false);
   const [firmInputError, setFirmInputError] = useState<string>('');
@@ -195,6 +196,10 @@ export function AdvisorForm({ onComplete, onToast, onFirmsChange, onRemoveFirm }
         enteredFirms: finalFirms
       }));
 
+      if (onFormStateChange) {
+        onFormStateChange(true);
+      }
+
       if (onComplete) {
         onComplete(finalFirms, formState.userEmail);
       }
@@ -206,6 +211,10 @@ export function AdvisorForm({ onComplete, onToast, onFirmsChange, onRemoveFirm }
         isFormComplete: true,
         enteredFirms: finalFirms
       }));
+
+      if (onFormStateChange) {
+        onFormStateChange(true);
+      }
 
       if (onComplete) {
         onComplete(finalFirms, formState.userEmail);
@@ -247,7 +256,13 @@ export function AdvisorForm({ onComplete, onToast, onFirmsChange, onRemoveFirm }
     setCurrentFirmInput('');
     setFirmInputError('');
     setEmailError('');
-  }, []);
+    if (onFormStateChange) {
+      onFormStateChange(false);
+    }
+    if (onFirmsChange) {
+      onFirmsChange([]);
+    }
+  }, [onFormStateChange, onFirmsChange]);
 
   const handleRemoveFirm = useCallback((firmId: string) => {
     setFormState(prev => {

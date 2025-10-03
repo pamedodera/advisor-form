@@ -54,30 +54,38 @@ export function FirmInputStep({
         </div>
       )}
 
-      <div>
-        <div className="space-y-1">
-          <label className="block mb-1 text-left typography-label-lg text-neutral-0">
-            {enteredFirms.length === 0 ? 'Law Firm' : 'Add Another Law Firm'}
-            <span className="text-red-0 ml-1">*</span>
-          </label>
-          <p className="typography-body-text text-left w-full text-night-sky-blue-1 pb-2">
-            {enteredFirms.length === 0
-              ? "Enter the first law firm"
-              : remainingFirms === 0
-              ? "Enter another law firm"
-              : `Enter another law firm (${remainingFirms} remaining)`
-            }
+      {enteredFirms.length < maxFirms ? (
+        <div>
+          <div className="space-y-1">
+            <label className="block mb-1 text-left typography-label-lg text-neutral-0">
+              {enteredFirms.length === 0 ? 'Law Firm' : 'Add Another Law Firm'}
+              <span className="text-red-0 ml-1">*</span>
+            </label>
+            <p className="typography-body-text text-left w-full text-night-sky-blue-1 pb-2">
+              {enteredFirms.length === 0
+                ? "Enter the first law firm"
+                : remainingFirms === 0
+                ? "Enter another law firm"
+                : `Enter another law firm (${remainingFirms} remaining)`
+              }
+            </p>
+          </div>
+
+          <FirmInput
+            value={currentFirmInput}
+            onChange={onFirmInputChange}
+            onSubmit={onFirmSubmit}
+            placeholder="Type law firm name..."
+            error={firmInputError}
+          />
+        </div>
+      ) : (
+        <div>
+          <p className="text-base text-neutral-1">
+            To add a different firm, remove one from the list. Thanks!
           </p>
         </div>
-
-        <FirmInput
-          value={currentFirmInput}
-          onChange={onFirmInputChange}
-          onSubmit={onFirmSubmit}
-          placeholder="Type law firm name..."
-          error={firmInputError}
-        />
-      </div>
+      )}
 
       {enteredFirms.length > 0 && (
         <div className="pt-4">
