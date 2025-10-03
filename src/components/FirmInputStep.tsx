@@ -88,8 +88,8 @@ export function FirmInputStep({
             className="w-full"
           >
             {enteredFirms.length === maxFirms
-              ? "Finish"
-              : `Finish (${enteredFirms.length} firm${enteredFirms.length !== 1 ? 's' : ''} entered)`
+              ? "Submit"
+              : `Submit (${enteredFirms.length} firm${enteredFirms.length !== 1 ? 's' : ''} entered)`
             }
           </Button>
         </div>

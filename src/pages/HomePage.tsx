@@ -24,6 +24,10 @@ export default function HomePage() {
     setEnteredFirms(firms);
   };
 
+  const handleRemoveFirm = (firmId: string) => {
+    setEnteredFirms(prev => prev.filter(firm => firm.id !== firmId));
+  };
+
   // Auto-dismiss toast after 3 seconds
   useEffect(() => {
     if (showToast) {
@@ -48,7 +52,7 @@ export default function HomePage() {
           <div className="bg-white rounded-2xl p-10" style={{ border: '1px solid #eeeeee', boxShadow: 'rgba(0, 0, 0, 0.06) 0px 0.15rem 0.25rem 0px' }}>
             <div className={enteredFirms.length > 0 ? "grid lg:grid-cols-2 gap-8" : ""}>
               {/* Left side - Heading, description and form */}
-              <div>
+              <div className={enteredFirms.length > 0 ? "flex flex-col justify-center" : ""}>
                 {/* Main Heading */}
                 <div className="space-y-3 mb-8">
                   <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
@@ -61,19 +65,22 @@ export default function HomePage() {
                 </div>
 
                 {/* Form */}
-                <div className="max-w-xl mx-auto">
+                <div>
                   <AdvisorForm
                     onComplete={handleFormComplete}
                     onToast={handleToast}
                     onFirmsChange={handleFirmsChange}
+                    onRemoveFirm={handleRemoveFirm}
                   />
                 </div>
               </div>
 
               {/* Right side - Firm cards with divider */}
               {enteredFirms.length > 0 && (
-                <div className="border-t lg:border-t-0 lg:border-l border-neutral-4 pt-8 lg:pt-0 lg:pl-8">
-                  <FirmSummaryList firms={enteredFirms} />
+                <div className="border-t lg:border-t-0 lg:border-l border-neutral-4 pt-8 lg:pt-0 lg:pl-8 flex items-center w-full">
+                  <div className="w-full">
+                    <FirmSummaryList firms={enteredFirms} onRemoveFirm={handleRemoveFirm} />
+                  </div>
                 </div>
               )}
             </div>

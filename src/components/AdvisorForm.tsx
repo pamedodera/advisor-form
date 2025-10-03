@@ -20,9 +20,10 @@ interface AdvisorFormProps {
   onComplete?: (firms: FirmEntry[], userEmail: string) => void;
   onToast?: (message: string) => void;
   onFirmsChange?: (firms: FirmEntry[]) => void;
+  onRemoveFirm?: (firmId: string) => void;
 }
 
-export function AdvisorForm({ onComplete, onToast, onFirmsChange }: AdvisorFormProps) {
+export function AdvisorForm({ onComplete, onToast, onFirmsChange, onRemoveFirm }: AdvisorFormProps) {
   const [formState, setFormState] = useState<AdvisorFormState>(initialFormState);
   const [loading, setLoading] = useState(false);
   const [firmInputError, setFirmInputError] = useState<string>('');
@@ -254,12 +255,15 @@ export function AdvisorForm({ onComplete, onToast, onFirmsChange }: AdvisorFormP
       if (onFirmsChange) {
         onFirmsChange(updatedFirms);
       }
+      if (onRemoveFirm) {
+        onRemoveFirm(firmId);
+      }
       return {
         ...prev,
         enteredFirms: updatedFirms
       };
     });
-  }, [onFirmsChange]);
+  }, [onFirmsChange, onRemoveFirm]);
 
   return (
     <div className="space-y-6 relative">
