@@ -38,8 +38,7 @@ export function FirmInputStep({
   return (
     <div className="space-y-6">
       {/* Add new firm section */}
-      <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
-        <div className="space-y-4">
+      <div className="space-y-4">
           {/* Show email input only when no firms entered */}
           {enteredFirms.length === 0 && (
             <div>
@@ -83,21 +82,20 @@ export function FirmInputStep({
           </div>
 
           {enteredFirms.length > 0 && (
-            <div className="pt-4">
-              <Button
-                appearance="primary"
-                size="large"
-                onClick={onFinish}
-                className="w-full"
-              >
-                {enteredFirms.length === maxFirms
-                  ? "Finish"
-                  : `Finish (${enteredFirms.length} firm${enteredFirms.length !== 1 ? 's' : ''} entered)`
-                }
-              </Button>
-            </div>
-          )}
-        </div>
+          <div className="pt-4">
+            <Button
+              appearance="primary"
+              size="large"
+              onClick={onFinish}
+              className="w-full"
+            >
+              {enteredFirms.length === maxFirms
+                ? "Finish"
+                : `Finish (${enteredFirms.length} firm${enteredFirms.length !== 1 ? 's' : ''} entered)`
+              }
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Show previously entered firms if any */}

@@ -8,7 +8,7 @@ interface FirmSummaryListProps {
 
 function FirmSummaryCard({ firm, onRemove }: { firm: FirmEntry; onRemove?: (firmId: string) => void }) {
   return (
-    <div className="bg-white border border-neutral-4 rounded-lg p-4 shadow-sm relative">
+    <div className="bg-white rounded-lg p-4 relative" style={{ border: '1px solid #eeeeee', boxShadow: 'rgba(0, 0, 0, 0.06) 0px 0.15rem 0.25rem 0px' }}>
       {onRemove && (
         <button
           onClick={() => onRemove(firm.id)}
@@ -18,7 +18,7 @@ function FirmSummaryCard({ firm, onRemove }: { firm: FirmEntry; onRemove?: (firm
           <Icon type="close" size="small" />
         </button>
       )}
-      <div className="border-l-4 border-dark-blue-0 pl-4 py-3 rounded-r">
+      <div className="pl-4 py-3">
         <p className="typography-body-text text-neutral-0 font-semibold">
           {firm.firmName}
         </p>
