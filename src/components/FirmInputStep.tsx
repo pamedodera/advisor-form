@@ -1,5 +1,4 @@
 import FirmInput from './FirmInput';
-import FirmSummaryList from './FirmSummaryList';
 import Button from './Button';
 import Input from './Input';
 import type { FirmEntry } from '../types';
@@ -33,79 +32,73 @@ export function FirmInputStep({
   onEmailChange,
   onEmailBlur,
   emailError,
-  onRemoveFirm
 }: FirmInputStepProps) {
   return (
-    <div className="space-y-6">
-      {/* Add new firm section */}
-      <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
-        <div className="space-y-4">
-          {/* Show email input only when no firms entered */}
-          {enteredFirms.length === 0 && (
-            <div>
-              <Input
-                type="email"
-                label="Email Address"
-                placeholder="Enter your email address"
-                value={userEmail}
-                onChange={(e) => onEmailChange(e.target.value)}
-                onBlur={onEmailBlur}
-                error={emailError}
-                required
-                size="large"
-              />
-            </div>
-          )}
+    <div className="space-y-4">
+      {/* Show email input only when no firms entered */}
+      {enteredFirms.length === 0 && (
+        <div>
+          <Input
+            type="email"
+            label="Email Address"
+            placeholder="Enter your email address"
+            value={userEmail}
+            onChange={(e) => onEmailChange(e.target.value)}
+            onBlur={onEmailBlur}
+            error={emailError}
+            required
+            size="large"
+          />
+        </div>
+      )}
 
-          <div>
-            <div className="space-y-1">
-              <label className="block mb-1 text-left typography-label-lg text-neutral-0">
-                {enteredFirms.length === 0 ? 'Law Firm' : 'Add Another Law Firm'}
-                <span className="text-red-0 ml-1">*</span>
-              </label>
-              <p className="typography-body-text text-left w-full text-night-sky-blue-1 pb-2">
-                {enteredFirms.length === 0
-                  ? "Enter the first law firm"
-                  : remainingFirms === 0
-                  ? "Enter another law firm"
-                  : `Enter another law firm (${remainingFirms} remaining)`
-                }
-              </p>
-            </div>
-
-            <FirmInput
-              value={currentFirmInput}
-              onChange={onFirmInputChange}
-              onSubmit={onFirmSubmit}
-              placeholder="Type law firm name..."
-              error={firmInputError}
-            />
+      {enteredFirms.length < maxFirms ? (
+        <div>
+          <div className="space-y-1">
+            <label className="block mb-1 text-left typography-label-lg text-neutral-0">
+              {enteredFirms.length === 0 ? 'Law Firm' : 'Add Another Law Firm'}
+              <span className="text-red-0 ml-1">*</span>
+            </label>
+            <p className="typography-body-text text-left w-full text-night-sky-blue-1 pb-2">
+              {enteredFirms.length === 0
+                ? "Enter the first law firm"
+                : remainingFirms === 0
+                ? "Enter another law firm"
+                : `Enter another law firm (${remainingFirms} remaining)`
+              }
+            </p>
           </div>
 
-          {enteredFirms.length > 0 && (
-            <div className="pt-4">
-              <Button
-                appearance="primary"
-                size="large"
-                onClick={onFinish}
-                className="w-full"
-              >
-                {enteredFirms.length === maxFirms
-                  ? "Finish"
-                  : `Finish (${enteredFirms.length} firm${enteredFirms.length !== 1 ? 's' : ''} entered)`
-                }
-              </Button>
-            </div>
-          )}
+          <FirmInput
+            value={currentFirmInput}
+            onChange={onFirmInputChange}
+            onSubmit={onFirmSubmit}
+            placeholder="Type law firm name..."
+            error={firmInputError}
+          />
         </div>
-      </div>
+      ) : (
+        <div>
+          <p className="text-base text-neutral-1">
+            To add a different firm, remove one from the list. Thanks!
+          </p>
+        </div>
+      )}
 
-      {/* Show previously entered firms if any */}
       {enteredFirms.length > 0 && (
-        <>
-          <hr className="border-neutral-4" />
-          <FirmSummaryList firms={enteredFirms} onRemoveFirm={onRemoveFirm} />
-        </>
+        <div className="pt-4">
+          <Button
+            appearance="primary"
+            size="large"
+            onClick={onFinish}
+            className="w-full"
+          >
+            {enteredFirms.length === maxFirms
+              ? "Submit"
+              : `Submit (${enteredFirms.length} firm${enteredFirms.length !== 1 ? 's' : ''} entered)`
+            }
+          </Button>
+        </div>
       )}
     </div>
   );

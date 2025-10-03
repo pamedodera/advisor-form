@@ -1,36 +1,115 @@
+import { useState, useEffect } from 'react'
 import AdvisorForm from '../components/AdvisorForm'
+import FirmSummaryList from '../components/FirmSummaryList'
+import Toast from '../components/Toast'
 import type { FirmEntry } from '../types'
 import DefinitelyLogo from '../assets/definely-logo.svg?react'
 
 export default function HomePage() {
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [showToast, setShowToast] = useState(false);
+  const [enteredFirms, setEnteredFirms] = useState<FirmEntry[]>([]);
+  const [isFormComplete, setIsFormComplete] = useState(false);
+
   const handleFormComplete = (firms: FirmEntry[], userEmail: string) => {
     console.log('Form completed with firms:', firms);
     console.log('User email:', userEmail);
   };
 
+  const handleToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
+  const handleFirmsChange = (firms: FirmEntry[]) => {
+    setEnteredFirms(firms);
+  };
+
+  const handleRemoveFirm = (firmId: string) => {
+    setEnteredFirms(prev => prev.filter(firm => firm.id !== firmId));
+  };
+
+  const handleFormStateChange = (isComplete: boolean) => {
+    setIsFormComplete(isComplete);
+    if (isComplete) {
+      setEnteredFirms([]);
+    }
+  };
+
+  // Auto-dismiss toast after 3 seconds
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-night-sky-blue-8 to-white flex items-center justify-center">
-      <div className="max-w-2xl w-full px-4">
-        <div className="space-y-12 text-center">
+    <div className="min-h-screen flex items-center justify-center py-8">
+      <div className={`w-full px-4 transition-all duration-300 ${enteredFirms.length > 0 && !isFormComplete ? 'max-w-7xl' : 'max-w-2xl'}`}>
+        <div className="space-y-6 text-center">
           {/* Definely Logo */}
           <div className="flex items-center justify-center">
-            <DefinitelyLogo className="h-16 w-auto" />
+            <DefinitelyLogo className="h-20 w-auto" />
           </div>
 
-          {/* Main Heading */}
-          <div className="space-y-6">
-            <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Network Assist Portal
-            </h1>
-            <p className="text-neutral-1 max-w-xl mx-auto text-lg" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Please indicate the firms where you have strong relationships and would be willing to make an introduction. For each firm that matches our prospect list, we'll ask you to share contact details.
-            </p>
+          {/* White Card Container with two columns */}
+          <div className="bg-white rounded-2xl p-10" style={{ border: '1px solid #eeeeee', boxShadow: 'rgba(0, 0, 0, 0.06) 0px 0.15rem 0.25rem 0px' }}>
+            <div className={enteredFirms.length > 0 && !isFormComplete ? "grid lg:grid-cols-2 gap-8" : ""}>
+              {/* Left side - Heading, description and form */}
+              <div className={enteredFirms.length > 0 && !isFormComplete ? "flex flex-col justify-center" : ""}>
+                {/* Main Heading */}
+                <div className="space-y-3 mb-8">
+                  <h1 className="text-5xl font-bold text-night-sky-blue-dark-1 leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    Network Assist Portal
+                  </h1>
+                  <div className="text-neutral-1 max-w-xl mx-auto text-lg space-y-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    <p>Please indicate the firms where you have strong relationships and would be willing to make an introduction.</p>
+                    <p>For each firm that matches our prospect list, we'll ask you to share contact details.</p>
+                  </div>
+                </div>
+
+                {/* Form */}
+                <div>
+                  <AdvisorForm
+                    onComplete={handleFormComplete}
+                    onToast={handleToast}
+                    onFirmsChange={handleFirmsChange}
+                    onRemoveFirm={handleRemoveFirm}
+                    onFormStateChange={handleFormStateChange}
+                  />
+                </div>
+              </div>
+
+              {/* Right side - Firm cards with divider */}
+              {enteredFirms.length > 0 && !isFormComplete && (
+                <div className="border-t lg:border-t-0 lg:border-l border-neutral-4 pt-8 lg:pt-0 lg:pl-8 flex items-center w-full">
+                  <div className="w-full">
+                    <FirmSummaryList firms={enteredFirms} onRemoveFirm={handleRemoveFirm} />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Form */}
-          <div className="max-w-xl mx-auto">
-            <AdvisorForm onComplete={handleFormComplete} />
-          </div>
+          {/* Toast notification - outside the card */}
+          {showToast && (
+            <div className="flex justify-center">
+              <Toast
+                label={toastMessage}
+                intent="success"
+                onClose={() => setShowToast(false)}
+              />
+            </div>
+          )}
+
+          {/* Contact support text */}
+          <p className="text-neutral-1">
+            Need assistance? <a href="mailto:support@definely.com" className="text-dark-blue-0 hover:underline">Get in touch!</a>
+          </p>
         </div>
       </div>
     </div>
