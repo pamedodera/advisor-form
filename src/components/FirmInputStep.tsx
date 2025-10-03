@@ -1,5 +1,4 @@
 import FirmInput from './FirmInput';
-import FirmSummaryList from './FirmSummaryList';
 import Button from './Button';
 import Input from './Input';
 import type { FirmEntry } from '../types';
@@ -33,7 +32,6 @@ export function FirmInputStep({
   onEmailChange,
   onEmailBlur,
   emailError,
-  onRemoveFirm
 }: FirmInputStepProps) {
   return (
     <div className="space-y-4">
