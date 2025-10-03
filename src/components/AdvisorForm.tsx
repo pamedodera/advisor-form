@@ -19,9 +19,10 @@ const initialFormState: AdvisorFormState = {
 interface AdvisorFormProps {
   onComplete?: (firms: FirmEntry[], userEmail: string) => void;
   onToast?: (message: string) => void;
+  onFirmsChange?: (firms: FirmEntry[]) => void;
 }
 
-export function AdvisorForm({ onComplete, onToast }: AdvisorFormProps) {
+export function AdvisorForm({ onComplete, onToast, onFirmsChange }: AdvisorFormProps) {
   const [formState, setFormState] = useState<AdvisorFormState>(initialFormState);
   const [loading, setLoading] = useState(false);
   const [firmInputError, setFirmInputError] = useState<string>('');
@@ -78,20 +79,26 @@ export function AdvisorForm({ onComplete, onToast }: AdvisorFormProps) {
         timestamp: new Date()
       };
 
-      setFormState(prev => ({
-        ...prev,
-        enteredFirms: [...prev.enteredFirms, newFirmEntry],
-        currentFirmName: '',
-        currentFirmMatched: false,
-        currentStep: 'firm-input'
-      }));
+      setFormState(prev => {
+        const updatedFirms = [...prev.enteredFirms, newFirmEntry];
+        if (onFirmsChange) {
+          onFirmsChange(updatedFirms);
+        }
+        return {
+          ...prev,
+          enteredFirms: updatedFirms,
+          currentFirmName: '',
+          currentFirmMatched: false,
+          currentStep: 'firm-input'
+        };
+      });
 
       // Show toast notification
       if (onToast) {
         onToast(`Thank you! We'll be in touch with you about ${exactFirmName}.`);
       }
     }
-  }, [formState.enteredFirms, formState.userEmail]);
+  }, [formState.enteredFirms, formState.userEmail, onFirmsChange, onToast]);
 
   const handleContactSubmit = useCallback((contactData: ContactFormData) => {
     console.log('handleContactSubmit called with:', contactData);
@@ -112,13 +119,19 @@ export function AdvisorForm({ onComplete, onToast }: AdvisorFormProps) {
 
       console.log('Creating new firm entry:', newFirmEntry);
 
-      setFormState(prev => ({
-        ...prev,
-        enteredFirms: [...prev.enteredFirms, newFirmEntry],
-        currentStep: 'firm-input',
-        currentFirmName: '',
-        currentFirmMatched: false
-      }));
+      setFormState(prev => {
+        const updatedFirms = [...prev.enteredFirms, newFirmEntry];
+        if (onFirmsChange) {
+          onFirmsChange(updatedFirms);
+        }
+        return {
+          ...prev,
+          enteredFirms: updatedFirms,
+          currentStep: 'firm-input',
+          currentFirmName: '',
+          currentFirmMatched: false
+        };
+      });
 
       // Show toast notification for matched firm
       if (onToast) {
@@ -236,11 +249,17 @@ export function AdvisorForm({ onComplete, onToast }: AdvisorFormProps) {
   }, []);
 
   const handleRemoveFirm = useCallback((firmId: string) => {
-    setFormState(prev => ({
-      ...prev,
-      enteredFirms: prev.enteredFirms.filter(firm => firm.id !== firmId)
-    }));
-  }, []);
+    setFormState(prev => {
+      const updatedFirms = prev.enteredFirms.filter(firm => firm.id !== firmId);
+      if (onFirmsChange) {
+        onFirmsChange(updatedFirms);
+      }
+      return {
+        ...prev,
+        enteredFirms: updatedFirms
+      };
+    });
+  }, [onFirmsChange]);
 
   return (
     <div className="space-y-6 relative">

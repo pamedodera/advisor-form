@@ -15,7 +15,7 @@ export function ContactDetailsStep({
   loading
 }: ContactDetailsStepProps) {
   return (
-    <div className="bg-white border border-neutral-4 rounded-lg p-6 shadow-sm">
+    <div>
       <ContactForm
         firmName={firmName}
         onSubmit={onSubmit}
